@@ -75,7 +75,7 @@ def create_registration():
     if not event_result.data:
         return jsonify({"error": "Event not found."}), 404
     event = event_result.data[0]
-    if event.get("status") and event["status"].lower() not in {"open", "active"}:
+    if event.get("status") and event["status"].lower() not in {"open", "active", "upcoming"}:
         return jsonify({"error": "This event is not accepting registrations."}), 409
 
     existing = (
