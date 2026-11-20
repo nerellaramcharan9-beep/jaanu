@@ -138,8 +138,9 @@ document.querySelectorAll(".filter-chip").forEach((button) => button.addEventLis
 
 document.querySelector("#registration-form").addEventListener("submit", async (event) => {
   event.preventDefault();
+  const form = event.currentTarget;
   const feedback = document.querySelector("#registration-feedback");
-  const button = event.currentTarget.querySelector(".submit-button");
+  const button = form.querySelector(".submit-button");
   const userId = document.querySelector("#user-id-input").value.trim();
   const eventId = document.querySelector("#dialog-event-id").value;
   feedback.className = "form-feedback";
@@ -155,7 +156,7 @@ document.querySelector("#registration-form").addEventListener("submit", async (e
     if (!response.ok) throw new Error(data.error || `Registration failed (${response.status}).`);
     feedback.className = "form-feedback success";
     feedback.textContent = "You’re on the list! Your registration is saved.";
-    event.currentTarget.reset();
+    form.reset();
     setTimeout(() => registrationDialog.close(), 1400);
   } catch (error) {
     feedback.className = "form-feedback error";
