@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: jaanu-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_EVENTS_URL
+        value: https://jaanu-1.onrender.com/api/events

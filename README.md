@@ -17,3 +17,5 @@ The local API configuration is in `frontend/.env.local` and points at the deploy
 ## Backend
 
 The Flask API is in `backend/`. It serves the event, registration, and attendee endpoints and allows cross-origin requests from any origin. The frontend has no login or authentication flow.
+
+`render-frontend.yaml` defines the separate React Static Site and points it at the existing Render API.

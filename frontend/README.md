@@ -25,7 +25,9 @@ npm run build
 
 ## Deploy as a separate Render frontend
 
-Create a Render Static Site connected to this repository with:
+Use the frontend-only Blueprint in [`../render-frontend.yaml`](../render-frontend.yaml) to create a Render Static Site without recreating the backend service. Render Blueprints support selecting a custom YAML file path.
+
+If creating the Static Site manually, connect this repository with:
 
 - Root directory: `frontend`
 - Build command: `npm ci && npm run build`
