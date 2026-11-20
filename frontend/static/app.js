@@ -7,7 +7,7 @@ const heroCount = document.querySelector("#hero-count");
 const registrationDialog = document.querySelector("#registration-dialog");
 const detailsDialog = document.querySelector("#details-dialog");
 
-let events = [];
+let events = Array.isArray(window.CAMPUS_INITIAL_EVENTS) ? window.CAMPUS_INITIAL_EVENTS : [];
 let activeFilter = "all";
 let selectedEvent = null;
 
@@ -63,7 +63,9 @@ function renderEvents() {
 }
 
 async function loadEvents() {
-  eventsGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">✳</div><h3>Finding your next thing…</h3><p>Connecting to the campus event feed.</p></div>';
+  if (!events.length) {
+    eventsGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">✳</div><h3>Finding your next thing…</h3><p>Connecting to the campus event feed.</p></div>';
+  }
   notice.hidden = true;
   try {
     const response = await fetch(`${API_BASE}/api/events`);
@@ -203,4 +205,5 @@ document.querySelector("#schedule-form").addEventListener("submit", async (event
   }
 });
 
+if (events.length) renderEvents();
 loadEvents();

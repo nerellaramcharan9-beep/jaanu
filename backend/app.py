@@ -55,7 +55,14 @@ def current_user_id():
 
 @app.get("/")
 def index():
-    return render_template("index.html")
+    try:
+        events = get_supabase().table("events").select("*").execute().data
+        event_error = None
+    except APIError:
+        app.logger.exception("Could not load events for the frontend")
+        events = []
+        event_error = "The event feed could not connect. Please try refreshing."
+    return render_template("index.html", initial_events=events, event_error=event_error)
 
 
 @app.get("/health")

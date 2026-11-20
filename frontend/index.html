@@ -9,8 +9,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
-    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='4') }}" />
+    <script>window.CAMPUS_INITIAL_EVENTS = {{ initial_events|tojson }};</script>
+    <script src="{{ url_for('static', filename='app.js', v='4') }}" defer></script>
   </head>
   <body>
     <div class="ambient ambient-purple"></div>
@@ -40,7 +41,7 @@
           <p class="hero-description">The talks, meetups, and big ideas happening around campus. Pick a pulse and show up.</p>
           <div class="hero-meta">
             <span class="meta-dot"></span>
-            <span id="hero-count">Finding events…</span>
+            <span id="hero-count">{{ initial_events|length }} {{ 'event' if initial_events|length == 1 else 'events' }} on the calendar</span>
             <span class="meta-divider">/</span>
             <span>Make today count</span>
           </div>
@@ -68,7 +69,25 @@
           <span id="result-count" class="result-count"></span>
         </div>
         <div id="notice" class="notice" role="status" hidden></div>
-        <div id="events-grid" class="events-grid" aria-live="polite"></div>
+        <div id="events-grid" class="events-grid" aria-live="polite">
+          {% if initial_events %}
+            {% for event in initial_events %}
+              <article class="event-card" style="--card-accent:#8b5cf6">
+                <div class="card-top"><span class="event-category"><span class="category-icon">✳</span> CAMPUS EVENT</span><span class="status-pill">{{ event.status or 'Open' }}</span></div>
+                <h3 class="event-title">{{ event.title or 'Untitled event' }}</h3>
+                <span class="event-id">{{ event.id }}</span>
+                <div class="event-meta"><span class="capacity-icon">◉</span><span>{{ 'Capacity: ' ~ event.capacity if event.capacity is not none else 'Capacity not listed' }}</span></div>
+                <div class="card-actions"><span class="capacity-label">{% if event.capacity is not none %}<strong>{{ event.capacity }}</strong> total capacity{% else %}Event details{% endif %}</span>
+                  <div class="event-actions"><button class="details-button" data-details="{{ event.id }}" type="button">Details</button><button class="register-button" data-register="{{ event.id }}" type="button">Join event ↗</button></div>
+                </div>
+              </article>
+            {% endfor %}
+          {% elif event_error %}
+            <div class="empty-state"><div class="empty-icon">!</div><h3>Could not load the event feed</h3><p>{{ event_error }}</p></div>
+          {% else %}
+            <div class="empty-state"><div class="empty-icon">✳</div><h3>No events yet</h3><p>Check back soon for campus events.</p></div>
+          {% endif %}
+        </div>
       </section>
 
       <footer class="footer"><a class="footer-brand" href="#explore">Campus<span class="brand-accent">Pulse</span></a><span>Good things happen when you show up.</span><span class="footer-status"><i></i> Connected to live campus events</span></footer>
