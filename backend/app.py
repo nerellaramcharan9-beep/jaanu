@@ -1,20 +1,13 @@
 import os
-from pathlib import Path
 
 from dotenv import load_dotenv
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, request
 from postgrest import APIError
 from supabase import Client, create_client
 
 load_dotenv()
 
-frontend_dir = Path(__file__).resolve().parent.parent / "frontend"
-app = Flask(
-    __name__,
-    template_folder=str(frontend_dir),
-    static_folder=str(frontend_dir / "static"),
-    static_url_path="/static",
-)
+app = Flask(__name__)
 
 supabase_url = os.environ.get("SUPABASE_URL")
 supabase_key = os.environ.get("SUPABASE_PUBLISHABLE_KEY")
@@ -55,14 +48,18 @@ def current_user_id():
 
 @app.get("/")
 def index():
-    try:
-        events = get_supabase().table("events").select("*").execute().data
-        event_error = None
-    except APIError:
-        app.logger.exception("Could not load events for the frontend")
-        events = []
-        event_error = "The event feed could not connect. Please try refreshing."
-    return render_template("index.html", initial_events=events, event_error=event_error)
+    return jsonify(
+        {
+            "service": "jaanu event API",
+            "endpoints": [
+                "GET /api/events",
+                "GET /api/events/<event_id>",
+                "POST /api/registrations",
+                "GET /api/me/registrations",
+                "GET /api/events/<event_id>/registrations",
+            ],
+        }
+    )
 
 
 @app.get("/health")

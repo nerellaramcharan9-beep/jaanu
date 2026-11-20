@@ -1,126 +1,17 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#101019" />
     <meta name="description" content="Discover events happening around campus." />
     <title>CampusPulse — Find your next thing</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='4') }}" />
-    <script>window.CAMPUS_INITIAL_EVENTS = {{ initial_events|tojson }};</script>
-    <script src="{{ url_for('static', filename='app.js', v='4') }}" defer></script>
   </head>
   <body>
-    <div class="ambient ambient-purple"></div>
-    <div class="ambient ambient-orange"></div>
-    <header class="topbar">
-      <a class="brand" href="#explore" aria-label="CampusPulse home">
-        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h3l2.1-6 4.2 12 2.1-6H21" /></svg></span>
-        <span>Campus<span class="brand-accent">Pulse</span></span>
-      </a>
-      <nav class="main-nav" aria-label="Main navigation">
-        <button class="nav-link active" data-page="explore" type="button">Explore</button>
-        <button class="nav-link" data-page="schedule" type="button">My schedule</button>
-      </nav>
-      <div class="topbar-right">
-        <span class="live-pill"><i></i> CAMPUS LIVE</span>
-        <button class="avatar-button" type="button" title="No account required" aria-label="No account required">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.7-3.4 3.1-5.2 7-5.2s6.3 1.8 7 5.2"/></svg>
-        </button>
-      </div>
-    </header>
-
-    <main id="explore" class="page-shell">
-      <section class="hero">
-        <div class="hero-copy">
-          <div class="eyebrow"><span class="eyebrow-star">✳</span> YOUR CAMPUS, IN MOTION</div>
-          <h1>Find your people.<br /><span>Find your next thing.</span></h1>
-          <p class="hero-description">The talks, meetups, and big ideas happening around campus. Pick a pulse and show up.</p>
-          <div class="hero-meta">
-            <span class="meta-dot"></span>
-            <span id="hero-count">{{ initial_events|length }} {{ 'event' if initial_events|length == 1 else 'events' }} on the calendar</span>
-            <span class="meta-divider">/</span>
-            <span>Make today count</span>
-          </div>
-        </div>
-        <div class="hero-art" aria-hidden="true">
-          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
-          <div class="hero-spark spark-one">✳</div><div class="hero-spark spark-two">✦</div>
-          <div class="hero-ticket"><span class="ticket-kicker">YOUR NEXT<br/>BIG IDEA</span><span class="ticket-glyph">↗</span><span class="ticket-caption">IS OUT THERE</span></div>
-          <div class="hero-sticker">GO<br/>WHERE<br/>IT HAPPENS</div>
-        </div>
-      </section>
-
-      <section class="discovery" aria-labelledby="events-title">
-        <div class="section-heading">
-          <div><span class="section-kicker">THE CAMPUS CALENDAR</span><h2 id="events-title">Explore events <span class="heading-period">.</span></h2></div>
-          <button id="refresh-button" class="refresh-button" type="button"><span aria-hidden="true">↻</span> Refresh</button>
-        </div>
-        <div class="toolbar">
-          <label class="search-box"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m16 16 4.2 4.2"/></svg><input id="search-input" type="search" placeholder="Search events…" autocomplete="off" /></label>
-          <div class="filter-list" role="group" aria-label="Filter events">
-            <button class="filter-chip selected" data-filter="all" type="button">All events</button>
-            <button class="filter-chip" data-filter="upcoming" type="button">Upcoming</button>
-            <button class="filter-chip" data-filter="open" type="button">Open now</button>
-          </div>
-          <span id="result-count" class="result-count"></span>
-        </div>
-        <div id="notice" class="notice" role="status" hidden></div>
-        <div id="events-grid" class="events-grid" aria-live="polite">
-          {% if initial_events %}
-            {% for event in initial_events %}
-              <article class="event-card" style="--card-accent:#8b5cf6">
-                <div class="card-top"><span class="event-category"><span class="category-icon">✳</span> CAMPUS EVENT</span><span class="status-pill">{{ event.status or 'Open' }}</span></div>
-                <h3 class="event-title">{{ event.title or 'Untitled event' }}</h3>
-                <span class="event-id">{{ event.id }}</span>
-                <div class="event-meta"><span class="capacity-icon">◉</span><span>{{ 'Capacity: ' ~ event.capacity if event.capacity is not none else 'Capacity not listed' }}</span></div>
-                <div class="card-actions"><span class="capacity-label">{% if event.capacity is not none %}<strong>{{ event.capacity }}</strong> total capacity{% else %}Event details{% endif %}</span>
-                  <div class="event-actions"><button class="details-button" data-details="{{ event.id }}" type="button">Details</button><button class="register-button" data-register="{{ event.id }}" type="button">Join event ↗</button></div>
-                </div>
-              </article>
-            {% endfor %}
-          {% elif event_error %}
-            <div class="empty-state"><div class="empty-icon">!</div><h3>Could not load the event feed</h3><p>{{ event_error }}</p></div>
-          {% else %}
-            <div class="empty-state"><div class="empty-icon">✳</div><h3>No events yet</h3><p>Check back soon for campus events.</p></div>
-          {% endif %}
-        </div>
-      </section>
-
-      <footer class="footer"><a class="footer-brand" href="#explore">Campus<span class="brand-accent">Pulse</span></a><span>Good things happen when you show up.</span><span class="footer-status"><i></i> Connected to live campus events</span></footer>
-    </main>
-
-    <dialog id="registration-dialog" class="dialog-card">
-      <form id="registration-form" method="dialog">
-        <button class="dialog-close" type="button" data-close aria-label="Close">×</button>
-        <span class="dialog-kicker">SAVE YOUR SPOT</span>
-        <h2 id="dialog-event-title">Join the event</h2>
-        <p class="dialog-description">Enter an existing user ID from your campus database to link this registration. There’s no sign-in or password.</p>
-        <input id="dialog-event-id" name="event_id" type="hidden" />
-        <label class="field-label" for="user-id-input">Your user ID</label>
-        <input id="user-id-input" class="text-field" name="user_id" required placeholder="Paste your users.id UUID" autocomplete="off" />
-        <p class="field-hint">This identifies the registration; it does not verify who you are.</p>
-        <button class="submit-button" type="submit"><span>Reserve my spot</span><span aria-hidden="true">↗</span></button>
-        <div id="registration-feedback" class="form-feedback" role="status"></div>
-      </form>
-    </dialog>
-
-    <dialog id="details-dialog" class="dialog-card details-dialog">
-      <button class="dialog-close" type="button" data-close aria-label="Close">×</button>
-      <span class="dialog-kicker">EVENT DETAILS</span>
-      <h2 id="details-title"></h2>
-      <div id="details-body" class="details-body"></div>
-      <button id="details-register" class="submit-button" type="button"><span>Reserve my spot</span><span aria-hidden="true">↗</span></button>
-    </dialog>
-
-    <section id="schedule-page" class="page-shell schedule-page" hidden>
-      <div class="schedule-hero"><span class="section-kicker">YOUR NEXT CHAPTER</span><h1>My <span>schedule.</span></h1><p>Look up registrations linked to your user ID.</p></div>
-      <form id="schedule-form" class="schedule-lookup"><label for="schedule-user-id">User ID</label><div class="lookup-row"><input id="schedule-user-id" class="text-field" required placeholder="Paste your users.id UUID" autocomplete="off"/><button class="submit-button" type="submit">Find my registrations <span aria-hidden="true">↗</span></button></div><p class="field-hint">No login is used. The ID simply filters registrations in the database.</p></form>
-      <div id="schedule-feedback" class="notice" role="status" hidden></div>
-      <div id="schedule-list" class="schedule-list"></div>
-    </section>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

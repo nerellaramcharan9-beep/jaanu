@@ -1,0 +1,37 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: #08070ec9;
+  backdrop-filter: blur(5px);
+}
+
+.modal-backdrop .dialog-card {
+  width: min(440px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  margin: 0;
+}
+
+.modal-backdrop .details-dialog {
+  width: min(520px, 100%);
+}
+
+.inline-retry {
+  margin-left: 12px;
+  padding: 5px 9px;
+  border: 1px solid #e58d5648;
+  border-radius: 7px;
+  background: #e58d5617;
+  color: #ffd0b2;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.inline-retry:hover {
+  background: #e58d5626;
+}
