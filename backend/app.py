@@ -1,7 +1,7 @@
 import os
 
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, render_template, request
 from postgrest import APIError
 from supabase import Client, create_client
 
@@ -48,18 +48,12 @@ def current_user_id():
 
 @app.get("/")
 def index():
-    return jsonify(
-        {
-            "service": "jaanu event API",
-            "endpoints": [
-                "GET /api/events",
-                "GET /api/events/<event_id>",
-                "POST /api/registrations",
-                "GET /api/me/registrations",
-                "GET /api/events/<event_id>/registrations",
-            ],
-        }
-    )
+    return render_template("index.html")
+
+
+@app.get("/health")
+def health():
+    return jsonify({"status": "ok", "service": "jaanu event API"})
 
 
 @app.get("/api/events")
