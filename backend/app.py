@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
@@ -7,7 +8,13 @@ from supabase import Client, create_client
 
 load_dotenv()
 
-app = Flask(__name__)
+frontend_dir = Path(__file__).resolve().parent.parent / "frontend"
+app = Flask(
+    __name__,
+    template_folder=str(frontend_dir),
+    static_folder=str(frontend_dir / "static"),
+    static_url_path="/static",
+)
 
 supabase_url = os.environ.get("SUPABASE_URL")
 supabase_key = os.environ.get("SUPABASE_PUBLISHABLE_KEY")
