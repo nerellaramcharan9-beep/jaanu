@@ -46,6 +46,22 @@ def current_user_id():
     return request.headers.get("X-User-Id") or request.args.get("user_id")
 
 
+@app.get("/")
+def index():
+    return jsonify(
+        {
+            "service": "jaanu event API",
+            "endpoints": [
+                "GET /api/events",
+                "GET /api/events/<event_id>",
+                "POST /api/registrations",
+                "GET /api/me/registrations",
+                "GET /api/events/<event_id>/registrations",
+            ],
+        }
+    )
+
+
 @app.get("/api/events")
 def list_events():
     result = get_supabase().table("events").select("*").execute()
