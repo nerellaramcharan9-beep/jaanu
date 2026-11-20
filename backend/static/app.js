@@ -54,7 +54,7 @@ function renderEvents() {
       <div class="card-top"><span class="event-category"><span class="category-icon">${glyphs[index % glyphs.length]}</span> CAMPUS EVENT</span><span class="status-pill">${escapeHtml(status)}</span></div>
       <h3 class="event-title">${escapeHtml(event.title || "Untitled event")}</h3>
       <span class="event-id">${escapeHtml(event.id)}</span>
-      <div class="event-meta"><span class="capacity-icon">◉</span><span>${hasCapacity ? `${capacity} spots available` : "Capacity not listed"}</span></div>
+      <div class="event-meta"><span class="capacity-icon">◉</span><span>${hasCapacity ? `Capacity: ${capacity}` : "Capacity not listed"}</span></div>
       <div class="card-actions"><span class="capacity-label">${hasCapacity ? `<strong>${capacity}</strong> total capacity` : "Event details"}</span>
         <div class="event-actions"><button class="details-button" data-details="${escapeHtml(event.id)}" type="button">Details</button><button class="register-button" data-register="${escapeHtml(event.id)}" type="button">Join event ↗</button></div>
       </div>
